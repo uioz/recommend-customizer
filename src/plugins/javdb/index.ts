@@ -1,4 +1,4 @@
-import { plugin } from "../../types";
+import { plugin } from "../types";
 
 export default {
   name: "javdb",

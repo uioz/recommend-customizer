@@ -1,2 +1,7 @@
+import "./lib/xhr.js";
 import "./db/index";
-import "./lib/sentiment";
+import { init } from "./lib/tokenizer";
+import { injectScript } from "./inject";
+
+init();
+injectScript();
