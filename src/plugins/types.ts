@@ -1,8 +1,12 @@
-export interface plugin {
+export type PluginBody<Args extends any[] = []> = {
+  host: string | RegExp;
+  path?: string | RegExp;
+  script: (...args: Args) => void;
+  args?: Args;
+};
+
+export interface Plugin {
   name: string;
   version: string;
-  scripts: Array<{
-    host: Array<RegExp | string> | string | RegExp;
-    script: () => void;
-  }>;
+  scripts: Array<PluginBody>;
 }

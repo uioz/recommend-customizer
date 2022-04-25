@@ -1,7 +1,7 @@
 import "./lib/xhr.js";
 import "./db/index";
-import { init } from "./lib/tokenizer";
-import { injectScript } from "./inject";
+import * as tokenizer from "./lib/tokenizer";
+import * as injector from "./injector";
 
-init();
-injectScript();
+injector.init();
+tokenizer.init();
