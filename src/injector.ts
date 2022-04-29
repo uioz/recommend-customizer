@@ -71,8 +71,8 @@ chrome.webNavigation.onDOMContentLoaded.addListener(
       }
     }
 
-    for (const plugin of plugins) {
-      if (plugin.path && !plugin.path.test(pathname)) {
+    for (const { host, name, script, version, args, path } of plugins) {
+      if (path && !path.test(pathname)) {
         continue;
       }
 
@@ -80,8 +80,10 @@ chrome.webNavigation.onDOMContentLoaded.addListener(
         target: {
           tabId,
         },
-        func: plugin.script,
-        args: plugin.args ?? [],
+        func: script,
+        args: args
+          ? [{ host, name, version }, ...args]
+          : [{ host, name, version }],
       });
     }
   }

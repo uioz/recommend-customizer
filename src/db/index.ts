@@ -24,7 +24,7 @@ class db extends Dexie {
     super(dbName);
 
     this.version(1).stores({
-      code: "code,weight,resFreshDate,createDate",
+      code: "code,weight,rank,resFreshDate,createDate",
       sentiment: "word,weight,updateDate",
       actress: "name,weight,*alias",
     });
