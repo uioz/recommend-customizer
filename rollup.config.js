@@ -48,6 +48,11 @@ if (env.PRE_BUILD) {
       // multiInput(),
       typescript({
         clean: true,
+        tsconfigOverride: {
+          compilerOptions: {
+            declaration: false,
+          },
+        },
       }),
       copy({
         targets: [
