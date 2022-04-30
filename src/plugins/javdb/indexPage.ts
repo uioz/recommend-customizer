@@ -18,9 +18,6 @@ export function script(meta: unknown, detailPathReg: string) {
         elem.querySelector(".value")?.innerText.trim().substring(0, 3)
       );
       // @ts-ignore
-      const date = elem.querySelector(".meta").innerText.trim();
-      const resFreshDate = new Date(`${date}T00:00:00.000Z`);
-      // @ts-ignore
       const [_, key] = matchKey.exec(href);
 
       return {

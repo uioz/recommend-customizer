@@ -6,7 +6,7 @@ export interface Meta {
 
 export type PluginBody<Args extends any[] = []> = {
   host: string | RegExp;
-  path?: string | RegExp;
+  path?: string | RegExp | Array<string | RegExp>;
   script: (meta: Meta, ...args: Args) => void;
   args?: Args;
 };

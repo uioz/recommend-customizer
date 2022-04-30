@@ -8,7 +8,7 @@ interface PluginCompiled {
   name: string;
   version: string;
   host: RegExp;
-  path?: RegExp;
+  path?: Array<RegExp>;
   args?: Array<any>;
   script: (...args: any) => void;
 }
@@ -31,7 +31,11 @@ function compilePlugin(plugins: Array<Plugin>) {
       };
 
       if (path) {
-        Object.assign(temp, { path: turnToRegexp(path) });
+        if (Array.isArray(path)) {
+          Object.assign(temp, { path: path.map(turnToRegexp) });
+        } else {
+          Object.assign(temp, { path: [turnToRegexp(path)] });
+        }
       }
 
       if (Array.isArray(args)) {
@@ -71,20 +75,16 @@ chrome.webNavigation.onDOMContentLoaded.addListener(
       }
     }
 
-    for (const { host, name, script, version, args, path } of plugins) {
-      if (path && !path.test(pathname)) {
-        continue;
+    for (const { script, args, path, ...rest } of plugins) {
+      if (Array.isArray(path) && path.some((regexp) => regexp.test(pathname))) {
+        chrome.scripting.executeScript({
+          target: {
+            tabId,
+          },
+          func: script,
+          args: args ? [rest, ...args] : [rest],
+        });
       }
-
-      chrome.scripting.executeScript({
-        target: {
-          tabId,
-        },
-        func: script,
-        args: args
-          ? [{ host, name, version }, ...args]
-          : [{ host, name, version }],
-      });
     }
   }
 );
