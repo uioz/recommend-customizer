@@ -1,16 +1,9 @@
 import { Plugin } from "../types";
-import index from "./indexPage";
-import * as detail from "./detailPageScript";
+import indexPage from "./indexPage";
+import viewPage from "./viewPageScript";
 
 export default {
   name: "javdb",
   version: "0.0.0",
-  scripts: [
-    index,
-    {
-      host: "javdb",
-      path: detail.path,
-      script: detail.script,
-    },
-  ],
+  scripts: [indexPage, viewPage],
 } as Plugin;

@@ -19,8 +19,8 @@ export interface Plugin {
 
 export type MessageEvent = "sort" | "update" | string;
 
-export interface MessageBody {
+export interface MessageBody<T = any> {
   meta?: Meta;
   event: Array<MessageEvent> | MessageEvent;
-  data: any;
+  data: T;
 }

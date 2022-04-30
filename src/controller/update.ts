@@ -1,5 +1,10 @@
 import { CodeRequest } from "./types";
 
+export interface UpdateRequest {
+  code: string;
+  title: string;
+}
+
 export interface UpdateResponse {
   update: string | null;
 }

@@ -3,7 +3,7 @@ import { PluginBody, MessageBody } from "../types";
 import { SortResponse } from "../../controller/sort";
 import { UpdateResponse } from "../../controller/update";
 import { CodeRequest } from "../../controller/types";
-import * as detail from "./detailPageScript";
+import * as viewPage from "./viewPageScript";
 
 export function script(meta: unknown, detailPathReg: string) {
   const matchKey = new RegExp(detailPathReg);
@@ -47,11 +47,25 @@ export function script(meta: unknown, detailPathReg: string) {
   );
 }
 
-export const path = pathToRegexp("/");
+const indexPath = pathToRegexp("/");
+const indexCensoredPath = pathToRegexp("/censored");
+const indexUncensoredPath = pathToRegexp("/uncensored");
+const seriesPath = pathToRegexp("/video_codes/:seriesId");
+const makderIdPath = pathToRegexp("/makers/:makerId");
+const actorIdPath = pathToRegexp("/actors/:actorId");
+const animePath = pathToRegexp("/tags/anime");
 
 export default {
   host: "javdb",
-  path,
+  path: [
+    indexPath,
+    indexCensoredPath,
+    indexUncensoredPath,
+    seriesPath,
+    makderIdPath,
+    actorIdPath,
+    animePath,
+  ],
   script,
-  args: [detail.path.source],
+  args: [viewPage.viewPath.source],
 } as PluginBody<Array<string>>;
