@@ -20,6 +20,12 @@ function kuromojiWrap() {
   );
 }
 
-export async function init() {
-  tokenizer = await kuromojiWrap();
+export async function tokenilize(str: string): Promise<Set<string>> {
+  if (!tokenizer) {
+    tokenizer = await kuromojiWrap();
+  }
+  return new Set();
+
+  // const result = tokenizer.tokenize(str)
+  // result[0].
 }

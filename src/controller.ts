@@ -1,5 +1,6 @@
-import { MessageBody, SortResponse, WriteResponse } from "./plugins/types";
-import { CodeResponse } from "./db/code";
+import { MessageBody } from "./plugins/types";
+import SortJob from "./controller/sort";
+import UpdateJob from "./controller/update";
 
 function isMessageBody(data: unknown): data is MessageBody {
   if (data) {
@@ -11,8 +12,8 @@ function isMessageBody(data: unknown): data is MessageBody {
 }
 
 const SORT_JOB = "sort";
-const WRITE_JOB = "write";
-const acceptableJobs = new Set([SORT_JOB, WRITE_JOB]);
+const UPDATE_JOB = "update";
+const acceptableJobs = new Set([SORT_JOB, UPDATE_JOB]);
 
 function pickJobs(data: MessageBody): Array<string> {
   if (Array.isArray(data.event)) {
@@ -28,7 +29,7 @@ function pickJobs(data: MessageBody): Array<string> {
   return event;
 }
 
-function distributeJobs(
+async function distributeJobs(
   jobs: Array<string>,
   data: any,
   sendResponse: (response?: any) => void
@@ -36,43 +37,41 @@ function distributeJobs(
   const asyncWrap = [];
 
   for (const job of jobs) {
+    /**
+     * write operation first
+     */
     switch (job) {
-      case SORT_JOB:
-        asyncWrap.push(
-          new Promise<SortResponse<CodeResponse>>((resolve) => {
-            resolve({
-              sort: (data as Array<any>).map(({ key }, weight) => ({
-                key,
-                weight,
-              })),
-            });
-          })
-        );
+      case UPDATE_JOB:
+        asyncWrap.push(UpdateJob(data));
         break;
-      case WRITE_JOB:
-        asyncWrap.push(
-          new Promise<WriteResponse>((resolve, reject) => {
-            reject({
-              [WRITE_JOB]: "error",
-            });
-          })
-        );
+      case SORT_JOB:
+        asyncWrap.push(SortJob(data));
         break;
     }
   }
 
-  Promise.allSettled(asyncWrap).then((results) =>
-    sendResponse(
-      results.reduce(
-        (prev, next) =>
-          Object.assign(
-            prev,
-            next.status === "fulfilled" ? next.value : next.reason
-          ),
-        {} as any
-      )
-    )
+  const results = [];
+
+  for (const job of asyncWrap) {
+    results.push(await job);
+  }
+
+  sendResponse(
+    results.reduce((prev, next) => Object.assign(prev, next), {} as any)
   );
+
+  // Promise.allSettled(asyncWrap).then((results) =>
+  //   sendResponse(
+  //     results.reduce(
+  //       (prev, next) =>
+  //         Object.assign(
+  //           prev,
+  //           next.status === "fulfilled" ? next.value : next.reason
+  //         ),
+  //       {} as any
+  //     )
+  //   )
+  // );
 }
 
 const ASYNC_RESPONSE_FLAG = true;

@@ -1,6 +1,8 @@
 import { pathToRegexp } from "path-to-regexp";
-import { PluginBody, MessageBody, SortResponse, WriteResponse } from "../types";
-import { CodeRequest } from "../../db/code";
+import { PluginBody, MessageBody } from "../types";
+import { SortResponse } from "../../controller/sort";
+import { UpdateResponse } from "../../controller/update";
+import { CodeRequest } from "../../controller/types";
 import * as detail from "./detailPageScript";
 
 export function script(meta: unknown, detailPathReg: string) {
@@ -27,8 +29,6 @@ export function script(meta: unknown, detailPathReg: string) {
         title,
         code,
         rank,
-        resFreshDate,
-        createDate: new Date(),
       };
     } catch (error) {
       console.error(error);
@@ -39,9 +39,9 @@ export function script(meta: unknown, detailPathReg: string) {
     document.querySelectorAll(".box")
   ).map(extract);
 
-  chrome.runtime.sendMessage<MessageBody, SortResponse<CodeRequest> & WriteResponse>(
+  chrome.runtime.sendMessage<MessageBody, SortResponse & UpdateResponse>(
     {
-      event: ["sort", "write"],
+      event: ["sort", "update"],
       data,
     },
     (response) => {

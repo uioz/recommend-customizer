@@ -1,34 +1,26 @@
 import { Dexie } from "dexie";
-import { type CodeInDb } from "./code";
+import { type CodeInDb, indexes as code } from "./code";
+import { type Sentiment, indexes as sentiment } from "./sentiment";
+import { type Actress, indexes as actress } from "./actress";
 
-export const DB_NAME = "mainDb";
+export const DB_NAME = "main";
 
-export interface Sentiment {
-  word: string;
-  weight: number;
-  updateDate: Date;
-}
-
-export interface Actress {
-  name: string;
-  weight: number;
-  alias: Array<string>;
-}
-
-class db extends Dexie {
+export class MainDb extends Dexie {
   code!: Dexie.Table<CodeInDb, string>;
   sentiment!: Dexie.Table<Sentiment, string>;
   actress!: Dexie.Table<Actress, string>;
 
   constructor(dbName = DB_NAME) {
-    super(dbName);
+    super(dbName, {
+      autoOpen: true,
+    });
 
     this.version(1).stores({
-      code: "code,weight,rank,resFreshDate,createDate",
-      sentiment: "word,weight,updateDate",
-      actress: "name,weight,*alias",
+      code,
+      sentiment,
+      actress,
     });
   }
 }
 
-export const DB = new db();
+export const DB = new MainDb();
