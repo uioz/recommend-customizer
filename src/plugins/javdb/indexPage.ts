@@ -1,12 +1,12 @@
 import { pathToRegexp } from "path-to-regexp";
 import { PluginBody, MessageBody, SortResponse, WriteResponse } from "../types";
-import { Code } from "../../db/code";
+import { CodeRequest } from "../../db/code";
 import * as detail from "./detailPageScript";
 
 export function script(meta: unknown, detailPathReg: string) {
   const matchKey = new RegExp(detailPathReg);
 
-  function extract(elem: HTMLAnchorElement): Code | undefined {
+  function extract(elem: HTMLAnchorElement): CodeRequest | undefined {
     try {
       const href = elem.getAttribute("href") as string;
       const title = elem.getAttribute("title")?.trim() as string;
@@ -39,18 +39,9 @@ export function script(meta: unknown, detailPathReg: string) {
     document.querySelectorAll(".box")
   ).map(extract);
 
-  chrome.runtime.sendMessage<MessageBody, SortResponse<Code>>(
+  chrome.runtime.sendMessage<MessageBody, SortResponse<CodeRequest> & WriteResponse>(
     {
-      event: "sort",
-      data,
-    },
-    (response) => {
-      console.log(response);
-    }
-  );
-  chrome.runtime.sendMessage<MessageBody, WriteResponse>(
-    {
-      event: "write",
+      event: ["sort", "write"],
       data,
     },
     (response) => {

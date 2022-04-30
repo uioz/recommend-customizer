@@ -1,5 +1,5 @@
 import { Dexie } from "dexie";
-import { type Code } from "./code";
+import { type CodeInDb } from "./code";
 
 export const DB_NAME = "mainDb";
 
@@ -16,7 +16,7 @@ export interface Actress {
 }
 
 class db extends Dexie {
-  code!: Dexie.Table<Code, string>;
+  code!: Dexie.Table<CodeInDb, string>;
   sentiment!: Dexie.Table<Sentiment, string>;
   actress!: Dexie.Table<Actress, string>;
 
