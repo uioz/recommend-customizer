@@ -20,12 +20,43 @@ function kuromojiWrap() {
   );
 }
 
-export async function tokenilize(str: string): Promise<Set<string>> {
+export async function init() {
   if (!tokenizer) {
     tokenizer = await kuromojiWrap();
   }
-  return new Set();
+  return tokenizer;
+}
 
-  // const result = tokenizer.tokenize(str)
-  // result[0].
+const normalWordMap = new Map<string, Set<string>>([
+  [
+    "名詞",
+    new Set(["一般", "形容動詞語幹", "サ変接続", "形容動詞語幹", "固有名詞"]),
+  ],
+  ["動詞", new Set(["自立"])],
+]);
+
+function processNormal(data: kuromoji.IpadicFeatures) {
+  if (normalWordMap.get(data.pos)?.has(data.pos_detail_1)) {
+    return data.surface_form;
+  }
+}
+
+function filter(data: kuromoji.IpadicFeatures[]) {
+  const keywords = [];
+
+  for (const item of data) {
+    const word = processNormal(item);
+
+    if (word) {
+      keywords.push(word);
+    }
+  }
+
+  return keywords;
+}
+
+export async function tokenilize(str: string): Promise<Array<string>> {
+  const tokenizer = await init();
+
+  return filter(tokenizer.tokenize(str));
 }

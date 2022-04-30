@@ -62,7 +62,7 @@ async function analyse({ code: fullCode, key, rank, title }: CodeRequest) {
     temp.codeWeight = await queryCodeWeight(DB, code);
   }
 
-  await querySentimentWeight(DB, await tokenilize(title));
+  await querySentimentWeight(DB, new Set(await tokenilize(title)));
 }
 
 function unifying() {}

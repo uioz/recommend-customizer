@@ -24,7 +24,7 @@ export function script() {
   }
 
   const isJav = (title: string): boolean =>
-    Array.from(title.matchAll(/[a-z\. ]/gi)).length / title.length < 0.5;
+    Array.from(title.matchAll(/[a-z\. ]/gi)).length / title.length < 0.9;
 
   if (code && isJav(title)) {
     const reviewButtons = document

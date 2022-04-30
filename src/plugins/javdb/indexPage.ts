@@ -50,6 +50,7 @@ export function script(meta: unknown, detailPathReg: string) {
 const indexPath = pathToRegexp("/");
 const indexCensoredPath = pathToRegexp("/censored");
 const indexUncensoredPath = pathToRegexp("/uncensored");
+const searchPath = pathToRegexp("/search");
 const seriesPath = pathToRegexp("/video_codes/:seriesId");
 const makderIdPath = pathToRegexp("/makers/:makerId");
 const actorIdPath = pathToRegexp("/actors/:actorId");
@@ -61,6 +62,7 @@ export default {
     indexPath,
     indexCensoredPath,
     indexUncensoredPath,
+    searchPath,
     seriesPath,
     makderIdPath,
     actorIdPath,
