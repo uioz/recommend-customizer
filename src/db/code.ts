@@ -1,6 +1,6 @@
 import { type MainDb } from "./index";
 
-export interface CodeInDb {
+export interface CodeTable {
   code: string;
   weight: number;
 }

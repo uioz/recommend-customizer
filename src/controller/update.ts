@@ -1,9 +1,11 @@
 import { tokenilize } from "../lib/tokenizer";
 import { getCodePrefix } from "./helper";
-import { DB } from "../db/index";
+import { DB, log } from "../db/index";
 import * as Actress from "../db/actress";
 import * as Code from "../db/code";
 import * as Sentiment from "../db/sentiment";
+
+const LOG_TARGET = "controller:update";
 
 export interface UpdateRequest {
   code: string;
@@ -32,7 +34,6 @@ function errorToString(error: unknown) {
 export default async (
   data: Array<UpdateRequest> | UpdateRequest
 ): Promise<UpdateResponse> => {
-  debugger
   const actressArr: Array<string> = [];
   const codePrefixs: Array<string> = [];
   const keywords: Array<string> = [];
@@ -47,6 +48,12 @@ export default async (
 
       if (prefix) {
         codePrefixs.push(prefix);
+      } else {
+        log("warn", LOG_TARGET, {
+          message: "code prefix missing",
+          code,
+          title,
+        });
       }
 
       if (Array.isArray(actress)) {
@@ -62,6 +69,10 @@ export default async (
     await Code.update(DB, codePrefixs);
     await Sentiment.update(DB, keywords);
   } catch (error) {
+    log("error", LOG_TARGET, {
+      message: "database operation failed",
+      error,
+    });
     return {
       update: errorToString(error),
     };

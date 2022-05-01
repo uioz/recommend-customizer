@@ -1,6 +1,6 @@
 import { type MainDb } from "./index";
 
-export interface Sentiment {
+export interface SentimentTable {
   word: string;
   weight: number;
 }

@@ -1,7 +1,7 @@
 import { type MainDb } from "./index";
 export const indexes = "name,weight";
 
-export interface Actress {
+export interface ActressTable {
   name: string;
   weight: number;
   // consider alias later

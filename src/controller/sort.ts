@@ -1,4 +1,4 @@
-import { DB } from "../db/index";
+import { DB, log } from "../db/index";
 import { CodeRequest } from "./types";
 import * as Code from "../db/code";
 import * as Sentiment from "../db/sentiment";
@@ -7,11 +7,13 @@ import { tokenilize } from "../lib/tokenizer";
 import { getCodePrefix } from "./helper";
 import { findActors } from "../lib/fuzz";
 
+const LOG_TARGET = "controller:sort";
+
 export interface SortResponse {
   sort: Array<{
     key: string;
     weight: number;
-  }>;
+  }> | null;
 }
 
 interface Item {
@@ -43,6 +45,12 @@ async function analyse(data: Array<CodeRequest>) {
 
       if (code) {
         item.codeWeight = await Code.singleQuery(DB, code);
+      } else {
+        log("warn", LOG_TARGET, {
+          message: "code prefix missing",
+          code: fullCode,
+          title,
+        });
       }
 
       const tokens = await tokenilize(title);
@@ -52,13 +60,25 @@ async function analyse(data: Array<CodeRequest>) {
           DB,
           Array.from(new Set(tokens))
         );
+      } else {
+        log("info", LOG_TARGET, {
+          message: "token match missing",
+          code: fullCode,
+          title,
+        });
       }
 
       const actress = await findActors(title);
 
       if (actress.length) {
         item.actressWeight = await Actress.totalWeight(DB, actress);
-      }
+      } /* else {
+        log("info", LOG_TARGET, {
+          message: "actress match missing",
+          code: fullCode,
+          title,
+        });
+      } */
 
       results.push(item);
     })
@@ -110,8 +130,19 @@ function sorting(data: Array<Item>): Array<{
 }
 
 export default async (data: Array<CodeRequest>): Promise<SortResponse> => {
-  debugger;
+  try {
+    const sort = sorting(unifying(await analyse(data)));
+    return {
+      sort,
+    };
+  } catch (error) {
+    log("error", LOG_TARGET, {
+      message: "sorting failed",
+      error,
+    });
+  }
+
   return {
-    sort: sorting(unifying(await analyse(data))),
+    sort: null,
   };
 };
