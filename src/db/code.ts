@@ -7,7 +7,7 @@ export interface CodeInDb {
 
 export const indexes = "code,weight";
 
-export async function queryWeight(db: MainDb, code: string): Promise<number> {
+export async function query(db: MainDb, code: string): Promise<number> {
   const data = await db.code.get({
     code,
   });
@@ -17,4 +17,19 @@ export async function queryWeight(db: MainDb, code: string): Promise<number> {
   }
 
   return 0;
+}
+
+export function update(db: MainDb, codes: Array<string>) {
+  return db.transaction("rw", db.code, async () => {
+    await db.code
+      .where("code")
+      .anyOf(codes)
+      .modify((data) => {
+        data.weight += codes.filter((code) => data.code === code).length;
+      });
+
+    try {
+      await db.code.bulkAdd(codes.map((code) => ({ code, weight: 1 })));
+    } catch (error) {}
+  });
 }

@@ -1,5 +1,5 @@
 import { pathToRegexp } from "path-to-regexp";
-import { UpdateRequest } from "../../controller/update";
+import { UpdateRequest, UpdateResponse } from "../../controller/update";
 import { PluginBody, MessageBody } from "../types";
 
 export const viewPath = pathToRegexp("/v/:id");
@@ -13,16 +13,25 @@ export function script() {
     .replace(new RegExp(code, "i"), "")
     .trim();
 
+  const actress = Array.from(
+    document.querySelectorAll<HTMLElement>(".symbol.female")
+  ).map((elem) => (elem.previousSibling as HTMLAnchorElement).innerText.trim());
+
   function sendToBackground() {
-    chrome.runtime.sendMessage<MessageBody<UpdateRequest>>({
-      event: "update",
-      data: {
-        code,
-        title,
+    chrome.runtime.sendMessage<MessageBody<UpdateRequest>, UpdateResponse>(
+      {
+        event: "update",
+        data: {
+          code,
+          title,
+          actress,
+        },
       },
-    });
+      (response) => console.log(response.update)
+    );
   }
 
+  // 只要英文在整个标题中的占比低于 90% 即可
   const isJav = (title: string): boolean =>
     Array.from(title.matchAll(/[a-z\. ]/gi)).length / title.length < 0.9;
 
