@@ -21,8 +21,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "rollup -c -w",
-    "build": "rollup -c",
+    "dev": "rollup -c -w --environment NODE_ENV:development",
+    "build": "rollup -c --environment NODE_ENV:porudction",
     "prebuild": "rollup -c --environment PRE_BUILD"
   },
   "keywords": [],

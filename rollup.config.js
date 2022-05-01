@@ -45,15 +45,19 @@ if (env.PRE_BUILD) {
     },
     plugins: [
       resolve(),
-      // multiInput(),
-      typescript({
-        clean: true,
-        tsconfigOverride: {
-          compilerOptions: {
-            declaration: false,
-          },
-        },
-      }),
+      typescript(
+        env.NODE_ENV === "development"
+          ? {}
+          : {
+              tsconfigOverride: {
+                compilerOptions: {
+                  declaration: true,
+                  declarationMap: true,
+                  sourceMap: true,
+                },
+              },
+            }
+      ),
       copy({
         targets: [
           {
