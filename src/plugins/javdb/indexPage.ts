@@ -1,7 +1,6 @@
 import { pathToRegexp } from "path-to-regexp";
 import { PluginBody, MessageBody } from "../types";
 import { SortResponse } from "../../controller/sort";
-import { UpdateResponse } from "../../controller/update";
 import { CodeRequest } from "../../controller/types";
 import * as viewPage from "./viewPageScript";
 
@@ -36,13 +35,27 @@ export function script(meta: unknown, detailPathReg: string) {
     document.querySelectorAll(".box")
   ).map(extract);
 
-  chrome.runtime.sendMessage<MessageBody, SortResponse & UpdateResponse>(
+  function sorting(sortedMap: Array<{ key: string; weight: number }>) {
+    const container = document.querySelector(".movie-list") as HTMLElement;
+
+    const elems = sortedMap.map(
+      ({ key }) =>
+        container.querySelector(`[href="/v/${key}"]`)
+          ?.parentElement as HTMLElement
+    );
+
+    container.replaceChildren(...elems);
+  }
+
+  chrome.runtime.sendMessage<MessageBody, SortResponse>(
     {
-      event: ["sort", "update"],
+      event: "sort",
       data,
     },
-    (response) => {
-      console.log(response);
+    ({ sort }) => {
+      if (sort) {
+        sorting(sort);
+      }
     }
   );
 }
