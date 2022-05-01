@@ -7,7 +7,16 @@ export interface Sentiment {
 
 export const indexes = "word,weight";
 
-export async function query(db: MainDb, tokenSet: Set<string>) {}
+export async function totalWeight(db: MainDb, tokenSet: Array<string>) {
+  let sum = 0;
+
+  for (const item of await db.sentiment.bulkGet(tokenSet)) {
+    if (item !== undefined) {
+      sum += item.weight;
+    }
+  }
+  return sum;
+}
 
 export function update(db: MainDb, tokens: Array<string>) {
   return db.transaction("rw", db.sentiment, async () => {

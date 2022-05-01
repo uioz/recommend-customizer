@@ -7,7 +7,7 @@ export interface CodeInDb {
 
 export const indexes = "code,weight";
 
-export async function query(db: MainDb, code: string): Promise<number> {
+export async function singleQuery(db: MainDb, code: string): Promise<number> {
   const data = await db.code.get({
     code,
   });

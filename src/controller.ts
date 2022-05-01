@@ -20,7 +20,7 @@ function pickJobs(data: MessageBody): Array<string> {
     return data.event.filter((item) => acceptableJobs.has(item));
   }
 
-  const event = [];
+  const event:Array<string> = [];
 
   if (acceptableJobs.has(data.event)) {
     event.push(data.event);

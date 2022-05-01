@@ -1,4 +1,5 @@
 import kuromoji from "kuromoji";
+import { isJapanese } from "../lib/is-japenese";
 
 let tokenizer: kuromoji.Tokenizer<kuromoji.IpadicFeatures>;
 
@@ -41,6 +42,8 @@ function processNormal(data: kuromoji.IpadicFeatures) {
   }
 }
 
+const effectiveWords = /^[a-z]{2,}$/i;
+
 function filter(data: kuromoji.IpadicFeatures[]) {
   const keywords = [];
 
@@ -48,7 +51,9 @@ function filter(data: kuromoji.IpadicFeatures[]) {
     const word = processNormal(item);
 
     if (word) {
-      keywords.push(word);
+      if (isJapanese(word) || effectiveWords.test(word)) {
+        keywords.push(word);
+      }
     }
   }
 

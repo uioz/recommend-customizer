@@ -2,6 +2,7 @@
   "dependencies": {
     "@types/kuromoji": "^0.1.1",
     "dexie": "^3.2.1",
+    "fuse.js": "^6.5.3",
     "kuromoji": "^0.1.2",
     "path-to-regexp": "^6.2.0"
   },

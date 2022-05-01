@@ -6,6 +6,7 @@ specifiers:
   '@types/chrome': ^0.0.181
   '@types/kuromoji': ^0.1.1
   dexie: ^3.2.1
+  fuse.js: ^6.5.3
   kuromoji: ^0.1.2
   path-to-regexp: ^6.2.0
   rollup: ^2.70.2
@@ -19,6 +20,7 @@ specifiers:
 dependencies:
   '@types/kuromoji': 0.1.1
   dexie: 3.2.1
+  fuse.js: 6.5.3
   kuromoji: 0.1.2
   path-to-regexp: 6.2.0
 
@@ -342,6 +344,11 @@ packages:
   /function-bind/1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npm.taobao.org/function-bind/-/function-bind-1.1.1.tgz}
     dev: true
+
+  /fuse.js/6.5.3:
+    resolution: {integrity: sha512-sA5etGE7yD/pOqivZRBvUBd/NaL2sjAu6QuSaFoe1H2BrJSkH/T/UXAJ8CdXdw7DvY3Hs8CXKYkDWX7RiP5KOg==}
+    engines: {node: '>=10'}
+    dev: false
 
   /glob-parent/5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npm.taobao.org/glob-parent/-/glob-parent-5.1.2.tgz}
