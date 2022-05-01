@@ -36,7 +36,7 @@ if (env.PRE_BUILD) {
   };
 } else {
   config = {
-    input: "./src/background.ts",
+    input: ["./src/background.ts","./src/popup.ts"],
     output: {
       dir: "dist",
       format: "esm",

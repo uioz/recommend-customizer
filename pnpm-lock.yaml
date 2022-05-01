@@ -6,6 +6,7 @@ specifiers:
   '@types/chrome': ^0.0.181
   '@types/kuromoji': ^0.1.1
   dexie: ^3.2.1
+  dexie-export-import: ^1.0.3
   fuse.js: ^6.5.3
   kuromoji: ^0.1.2
   path-to-regexp: ^6.2.0
@@ -20,6 +21,7 @@ specifiers:
 dependencies:
   '@types/kuromoji': 0.1.1
   dexie: 3.2.1
+  dexie-export-import: 1.0.3_dexie@3.2.1
   fuse.js: 6.5.3
   kuromoji: 0.1.2
   path-to-regexp: 6.2.0
@@ -237,6 +239,14 @@ packages:
     resolution: {integrity: sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /dexie-export-import/1.0.3_dexie@3.2.1:
+    resolution: {integrity: sha512-oun27bUUEaeOfSZ8Cv3Nvj5s0LeANYBYQ7ROpF/3Zg1X/IALUnrX0hk5ZUMlYC3s99kFHimXX57ac5AlOdMzWw==}
+    peerDependencies:
+      dexie: ^3.0.0 || ^2.0.4
+    dependencies:
+      dexie: 3.2.1
+    dev: false
 
   /dexie/3.2.1:
     resolution: {integrity: sha512-Y8oz3t2XC9hvjkP35B5I8rUkKKwM36GGRjWQCMjzIYScg7W+GHKDXobSYswkisW7CxL1/tKQtggMDsiWqDUc1g==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npm.taobao.org/dexie/-/dexie-3.2.1.tgz}
