@@ -10,8 +10,6 @@ export async function init() {
 
   searchEngine = Trie.from(await ActressStore.read());
 
-  console.dir(searchEngine);
-
   ActressStore.event.on((actress) => {
     for (const item of actress) {
       searchEngine.add(item);
