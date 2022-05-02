@@ -90,17 +90,33 @@ async function analyse(data: Array<CodeRequest>) {
 function unifying(data: Array<Item>) {
   let codeMax = 0,
     tokenMax = 0,
-    actressMax = 0;
+    actressMax = 0,
+    rankMin = 0,
+    rankMax = 0,
+    rankRange = 0;
 
-  for (const item of data) {
-    codeMax = Math.max(codeMax, item.codeWeight);
-    tokenMax = Math.max(tokenMax, item.tokenWeight);
-    actressMax = Math.max(actressMax, item.actressWeight);
+  const codeWeights = [];
+  const tokenWeights = [];
+  const actressWeights = [];
+  const ranks = [];
+
+  for (const { codeWeight, tokenWeight, actressWeight, rank } of data) {
+    codeWeights.push(codeWeight);
+    tokenWeights.push(tokenWeight);
+    actressWeights.push(actressWeight);
+    ranks.push(rank);
   }
 
+  codeMax = Math.max(...codeWeights);
+  tokenMax = Math.max(...tokenWeights);
+  actressMax = Math.max(...actressWeights);
+  rankMin = Math.min(...ranks);
+  rankMax = Math.max(...ranks);
+  rankRange = rankMax - rankMin;
+
   for (const item of data) {
-    // 4.5 * 20 = 90
-    item.rank *= 20;
+    item.rank = ((item.rank - rankMin) / rankRange) * 100;
+
     if (codeMax > 0) {
       item.codeWeight = (item.codeWeight / codeMax) * 100;
     }
@@ -123,7 +139,11 @@ function sorting(data: Array<Item>): Array<{
     .map(({ actressWeight, codeWeight, key, rank, tokenWeight }) => {
       return {
         key,
-        weight: actressWeight + codeWeight + rank + tokenWeight,
+        weight:
+          rank * 0.3 +
+          tokenWeight * 0.3 +
+          codeWeight * 0.2 +
+          actressWeight * 0.2,
       };
     })
     .sort((prev, next) => next.weight - prev.weight);
