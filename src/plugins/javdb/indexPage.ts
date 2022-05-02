@@ -57,18 +57,23 @@ export function script(meta: unknown, detailPathReg: string) {
     }
   }, 3000);
 
-  chrome.runtime.sendMessage<MessageBody, SortResponse>(
-    {
-      event: "sort",
-      data,
-    },
-    ({ sort }) => {
-      gotResponse = true;
-      if (sort) {
-        sorting(sort);
+  try {
+    chrome.runtime.sendMessage<MessageBody, SortResponse>(
+      {
+        event: "sort",
+        data,
+      },
+      ({ sort }) => {
+        gotResponse = true;
+        if (sort) {
+          sorting(sort);
+        }
       }
-    }
-  );
+    );
+  } catch (error) {
+    console.error(error);
+    alert(error);
+  }
 }
 
 const indexPath = pathToRegexp("/");

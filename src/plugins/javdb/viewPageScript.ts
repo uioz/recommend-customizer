@@ -18,17 +18,31 @@ export function script() {
   ).map((elem) => (elem.previousSibling as HTMLAnchorElement).innerText.trim());
 
   function sendToBackground() {
-    chrome.runtime.sendMessage<MessageBody<UpdateRequest>, UpdateResponse>(
-      {
-        event: "update",
-        data: {
-          code,
-          title,
-          actress,
+    let sendFeedback = false;
+    setTimeout(() => {
+      if (!sendFeedback) {
+        alert("time exceed");
+      }
+    }, 3000);
+    try {
+      chrome.runtime.sendMessage<MessageBody<UpdateRequest>, UpdateResponse>(
+        {
+          event: "update",
+          data: {
+            code,
+            title,
+            actress,
+          },
         },
-      },
-      (response) => console.log(response.update)
-    );
+        (response) => {
+          sendFeedback = true;
+          console.log(response.update);
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
   }
 
   // 只要英文在整个标题中的占比低于 90% 即可
