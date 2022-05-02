@@ -1,16 +1,16 @@
 import * as ActressStore from "../lib/actress-store";
-import Fuse from "fuse.js";
+import Trie from "mnemonist/trie";
 
-const LOG_TARGET = "fuzz";
+const LOG_TARGET = "register";
 
-const searchEngine = new Fuse<string>([], {
-  threshold: 0.94,
-  minMatchCharLength: 3,
-});
+let searchEngine = new Trie<string>();
 
 export async function init() {
   console.log(`${LOG_TARGET} init`);
-  searchEngine.setCollection(await ActressStore.read());
+
+  searchEngine = Trie.from(await ActressStore.read());
+
+  console.dir(searchEngine);
 
   ActressStore.event.on((actress) => {
     for (const item of actress) {
@@ -22,5 +22,21 @@ export async function init() {
 }
 
 export async function findActors(str: string) {
-  return searchEngine.search(str).map(({ item }) => item);
+  const machedNames = [];
+
+  let offset = 0,
+    len = str.length;
+
+  while (offset < len) {
+    for (const result of searchEngine.find(str[offset]).reverse()) {
+      if (result === str.slice(offset, offset + result.length)) {
+        machedNames.push(result);
+        break;
+      }
+    }
+
+    offset++;
+  }
+
+  return machedNames;
 }

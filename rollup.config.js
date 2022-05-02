@@ -36,14 +36,13 @@ if (env.PRE_BUILD) {
   };
 } else {
   config = {
-    input: ["./src/background.ts","./src/popup.ts"],
+    input: ["./src/background.ts", "./src/popup.ts"],
     output: {
       dir: "dist",
       format: "esm",
-      preserveModules: true,
-      preserveModulesRoot: "src",
     },
     plugins: [
+      commonjs(),
       resolve(),
       typescript(
         env.NODE_ENV === "development"

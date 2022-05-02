@@ -3,8 +3,8 @@
     "@types/kuromoji": "^0.1.1",
     "dexie": "^3.2.1",
     "dexie-export-import": "^1.0.3",
-    "fuse.js": "^6.5.3",
     "kuromoji": "^0.1.2",
+    "mnemonist": "^0.39.1",
     "path-to-regexp": "^6.2.0"
   },
   "devDependencies": {
