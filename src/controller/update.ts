@@ -4,6 +4,7 @@ import { DB, log } from "../db/index";
 import * as Actress from "../db/actress";
 import * as Code from "../db/code";
 import * as Sentiment from "../db/sentiment";
+import * as ActressStore from "../lib/actress-store";
 
 const LOG_TARGET = "controller:update";
 
@@ -65,9 +66,16 @@ export default async (
   );
 
   try {
-    await Actress.update(DB, actressArr);
-    await Code.update(DB, codePrefixs);
-    await Sentiment.update(DB, keywords);
+    if (actressArr.length) {
+      await Actress.update(DB, actressArr);
+      ActressStore.write(actressArr);
+    }
+    if (codePrefixs.length) {
+      await Code.update(DB, codePrefixs);
+    }
+    if (keywords.length) {
+      await Sentiment.update(DB, keywords);
+    }
   } catch (error) {
     log("error", LOG_TARGET, {
       message: "database operation failed",

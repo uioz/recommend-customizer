@@ -1,6 +1,8 @@
 import javdb from "./plugins/javdb";
 import { Plugin } from "./plugins/types";
+import { log } from "./db/index";
 
+const LOG_TARGET = "injector";
 const pluginsCollection: Array<PluginCompiled> = [];
 const pluginMap = new Map<string, Array<PluginCompiled>>();
 
@@ -53,9 +55,14 @@ export function init() {
 
 const MAIN_FRAME = 0;
 
-chrome.webNavigation.onDOMContentLoaded.addListener(
-  ({ frameId, tabId, url }) => {
+chrome.webNavigation.onCommitted.addListener(
+  ({ frameId, tabId, url, ...rest }) => {
     if (frameId !== MAIN_FRAME) {
+      log("warn", LOG_TARGET, {
+        message: "not main frame",
+        url,
+        ...rest,
+      });
       return;
     }
 

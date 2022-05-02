@@ -1,31 +1,40 @@
 import kuromoji from "kuromoji";
 import { isJapanese } from "../lib/is-japenese";
 
+const LOG_TARGET = "tokenizer";
+
 let tokenizer: kuromoji.Tokenizer<kuromoji.IpadicFeatures>;
+let fetchTokenizer:
+  | Promise<kuromoji.Tokenizer<kuromoji.IpadicFeatures>>
+  | undefined;
 
-function kuromojiWrap() {
-  return new Promise<kuromoji.Tokenizer<kuromoji.IpadicFeatures>>(
-    (resolve, reject) => {
-      kuromoji
-        .builder({
-          dicPath: "./dict",
-        })
-        .build((error, tokenizer) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(tokenizer);
-          }
-        });
-    }
-  );
-}
-
-export async function init() {
-  if (!tokenizer) {
-    tokenizer = await kuromojiWrap();
+export function init() {
+  if (tokenizer) {
+    return Promise.resolve(tokenizer);
   }
-  return tokenizer;
+
+  if (fetchTokenizer) {
+    return fetchTokenizer;
+  }
+  console.log(`${LOG_TARGET} init`);
+
+  return (fetchTokenizer = new Promise<
+    kuromoji.Tokenizer<kuromoji.IpadicFeatures>
+  >((resolve, reject) => {
+    kuromoji
+      .builder({
+        dicPath: "./dict",
+      })
+      .build((error, tokenizer) => {
+        if (error) {
+          console.error(`${LOG_TARGET} init failed ${error}`);
+          reject(error);
+        } else {
+          console.log(`${LOG_TARGET} init success`);
+          resolve(tokenizer);
+        }
+      });
+  }));
 }
 
 const normalWordMap = new Map<string, Set<string>>([
