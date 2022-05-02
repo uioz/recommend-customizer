@@ -7,7 +7,21 @@ export const ACTRESS_STORE_KEY = "actress";
 
 type Actress = Array<string>;
 
-export function write(actress: Array<string>) {
+export const event: {
+  hook: ((actress: Array<string>) => void) | undefined;
+  on: (handler: (actress: Array<string>) => void) => void;
+  emit: (actress: Array<string>) => void;
+} = {
+  hook: undefined,
+  on(handler) {
+    this.hook = handler;
+  },
+  emit(actress) {
+    this.hook?.(actress);
+  },
+};
+
+export function write(actress: Array<string>, preventEmit = false) {
   /**
    * some borwser doesn't support return promise yet
    */
@@ -16,7 +30,12 @@ export function write(actress: Array<string>) {
       {
         [ACTRESS_STORE_KEY]: actress,
       },
-      () => resolve(undefined)
+      () => {
+        if (!preventEmit) {
+          event.emit(actress);
+        }
+        resolve(undefined);
+      }
     );
   });
 }
@@ -42,6 +61,6 @@ export async function read() {
  */
 export async function init() {
   console.log(`${LOG_TARGET} init`);
-  write(await getAllActress(DB));
+  write(await getAllActress(DB), true);
   console.log(`${LOG_TARGET} success`);
 }
