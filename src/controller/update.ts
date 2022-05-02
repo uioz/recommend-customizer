@@ -70,15 +70,39 @@ export default async (
       await Actress.update(DB, actressArr);
       ActressStore.write(actressArr);
     }
+  } catch (error) {
+    log("error", LOG_TARGET, {
+      message: "actress update failed",
+      data,
+      error,
+    });
+    return {
+      update: errorToString(error),
+    };
+  }
+  try {
     if (codePrefixs.length) {
       await Code.update(DB, codePrefixs);
     }
+  } catch (error) {
+    log("error", LOG_TARGET, {
+      message: "code update failed",
+      data,
+      error,
+    });
+    return {
+      update: errorToString(error),
+    };
+  }
+
+  try {
     if (keywords.length) {
       await Sentiment.update(DB, keywords);
     }
   } catch (error) {
     log("error", LOG_TARGET, {
-      message: "database operation failed",
+      message: "token update failed",
+      data,
       error,
     });
     return {
