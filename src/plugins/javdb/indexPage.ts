@@ -49,12 +49,21 @@ export function script(meta: unknown, detailPathReg: string) {
     container.replaceChildren(...elems);
   }
 
+  let gotResponse = false;
+
+  setTimeout(() => {
+    if (!gotResponse) {
+      alert("time exceed");
+    }
+  }, 3000);
+
   chrome.runtime.sendMessage<MessageBody, SortResponse>(
     {
       event: "sort",
       data,
     },
     ({ sort }) => {
+      gotResponse = true;
       if (sort) {
         sorting(sort);
       }
