@@ -28,7 +28,12 @@ exportButton.addEventListener(
   "click",
   async () => {
     try {
-      save(await exportDB(DB), `${DB_NAME}.json`);
+      save(
+        await exportDB(DB, {
+          filter: (table) => table !== "log",
+        }),
+        `${DB_NAME}.json`
+      );
     } catch (error) {
       console.error(error);
       alert(error);
