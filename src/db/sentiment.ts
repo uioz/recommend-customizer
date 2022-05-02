@@ -10,12 +10,15 @@ export const indexes = "word,weight";
 export async function totalWeight(db: MainDb, tokenSet: Array<string>) {
   let sum = 0;
 
-  for (const item of await db.sentiment.bulkGet(tokenSet)) {
+  const results = await db.sentiment.bulkGet(tokenSet);
+
+  for (const item of results) {
     if (item !== undefined) {
       sum += item.weight;
     }
   }
-  return sum;
+  // more result = more weight
+  return sum * results.length;
 }
 
 export function update(db: MainDb, tokens: Array<string>) {
