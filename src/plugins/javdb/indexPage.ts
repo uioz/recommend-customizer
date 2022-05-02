@@ -37,12 +37,14 @@ export function script(meta: unknown, detailPathReg: string) {
 
   function sorting(sortedMap: Array<{ key: string; weight: number }>) {
     const container = document.querySelector(".movie-list") as HTMLElement;
-
-    const elems = sortedMap.map(
-      ({ key }) =>
-        container.querySelector(`[href="/v/${key}"]`)
-          ?.parentElement as HTMLElement
-    );
+    const elems = sortedMap.map(({ key, weight }) => {
+      const item = container.querySelector(`[href="/v/${key}"]`) as HTMLElement;
+      const span = document.createElement("span");
+      span.className = "tag is-success";
+      span.innerText = weight + "";
+      item.querySelector(".tags.has-addons")?.appendChild(span);
+      return item.parentElement as HTMLElement;
+    });
 
     container.replaceChildren(...elems);
   }
