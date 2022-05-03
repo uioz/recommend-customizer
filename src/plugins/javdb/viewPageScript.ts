@@ -49,6 +49,44 @@ export function script() {
   const isJav = (title: string): boolean =>
     Array.from(title.matchAll(/[a-z\. ]/gi)).length / title.length < 0.9;
 
+  const parser = new DOMParser();
+
+  const node = parser
+    .parseFromString(
+      `
+      <div id="jdb-plugin-indicator">
+      <style>
+        #jdb-plugin-indicator {
+          position: fixed;
+          top: 5vw;
+          transform: translateX(calc(-100% + 30px));
+          background: white;
+          border: 2px solid #3472dc;
+          padding: 1em;
+          border-radius: 0 1em 1em 0;
+          cursor: pointer;
+          will-change: transform;
+          transition: 200ms all;
+        }
+    
+        #jdb-plugin-indicator:hover {
+          transform: translateX(0%);
+        }
+      </style>
+      <ul>
+        <li><span>isjav:&nbsp;</span><span>${isJav(title)}</span></li>
+        <li><span>code:&nbsp;</span><span>${code}</span></li>
+        <li><span>title:&nbsp;</span><span>${title}</span></li>
+        <li><span>actress:&nbsp;</span><span>${actress}</span></li>
+      </ul>
+    </div>
+  `,
+      "text/html"
+    )
+    .getElementById("jdb-plugin-indicator") as HTMLElement;
+
+  document.body.appendChild(node);
+
   if (code && isJav(title)) {
     const reviewButtons = document
       .querySelector(".review-buttons.buttons")
