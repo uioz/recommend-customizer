@@ -39,7 +39,7 @@ async function analyse(data: Array<CodeRequest>) {
   while (i < len) {
     results.push({
       key: data[i].key,
-      rank: data[i].rank,
+      rank: data[i].rank ?? 0,
       codeWeight: 0,
       tokenWeight: 0,
       actressWeight: 0,
@@ -136,7 +136,9 @@ function unifying(data: Array<Item>) {
   rankRange = rankMax - rankMin;
 
   for (const item of data) {
-    item.rank = ((item.rank - rankMin) / rankRange) * 100;
+    if (item.rank > 0) {
+      item.rank = ((item.rank - rankMin) / rankRange) * 100;
+    }
 
     if (codeMax > 0) {
       item.codeWeight = (item.codeWeight / codeMax) * 100;
