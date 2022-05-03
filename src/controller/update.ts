@@ -43,9 +43,14 @@ export default async (
     data = [data];
   }
 
+  log("info", LOG_TARGET, {
+    message: "start process",
+    data,
+  });
+
   await Promise.all(
     data.map(async ({ title, code, actress }) => {
-      const prefix = getCodePrefix(code)?.toLowerCase();
+      const prefix = getCodePrefix(code);
 
       if (prefix) {
         codePrefixs.push(prefix);

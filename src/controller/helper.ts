@@ -19,17 +19,17 @@ export const t28PrefixCode = matchWraper(/^(?:t-28\d{3})|t28-\d{3}$/i, "t28");
 // 000xxx-000
 // XXX-000Z
 // 300XXX-000
-export const numberPrefixCode = matchWraper(
-  /^((?:\d{3})?[a-z]{2,7}-\d{2,5}(?:[a-z])?)$/i
+export const normalPrefixCode = matchWraper(
+  /^(?:\d{3})?([a-z]{2,7})-\d{2,5}(?:[a-z])?$/i
 );
 
-export const codePatterns = [numberPrefixCode, fc2PrefixCode, t28PrefixCode];
+export const codePatterns = [fc2PrefixCode, t28PrefixCode, normalPrefixCode];
 
 export function getCodePrefix(fullCode: string): string | null {
   for (const pattern of codePatterns) {
     const prefix = pattern(fullCode);
     if (prefix) {
-      return prefix;
+      return prefix.toLowerCase();
     }
   }
   return null;
