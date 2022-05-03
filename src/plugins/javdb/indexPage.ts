@@ -69,20 +69,27 @@ export function script(meta: unknown, detailPathReg: string) {
     const lowRankContainer = container.cloneNode(false) as HTMLElement;
     lowRankContainer.append(...lowRankItems);
 
-    const toolbar = document.querySelector(".index-toolbar") as HTMLElement;
-    const pagination = document.querySelector(".pagination") as HTMLElement;
-    pagination.style.position = "sticky";
-    pagination.style.top = "65px";
-    pagination.style.borderRadius = "1em";
-    pagination.style.zIndex = "100";
-    pagination.style.background = "#ffffffd9";
-    pagination.style.padding = "1em";
-    // @ts-ignore
-    pagination.style.backdropFilter = "blur(7px)";
+    const toolbar =
+      document.querySelector(".index-toolbar") ??
+      (document.querySelector("#search-bar-container") as HTMLElement);
 
-    toolbar.after(pagination);
-    container.replaceChildren(...freshItems);
+    try {
+      const pagination = document.querySelector(".pagination") as HTMLElement;
+      pagination.style.position = "sticky";
+      pagination.style.top = "65px";
+      pagination.style.borderRadius = "1em";
+      pagination.style.zIndex = "100";
+      pagination.style.background = "#ffffffd9";
+      pagination.style.padding = "1em";
+      // @ts-ignore
+      pagination.style.backdropFilter = "blur(7px)";
+
+      toolbar.after(pagination);
+    } catch (error) {
+      console.error(error);
+    }
     container.after(lowRankHead, lowRankContainer);
+    container.replaceChildren(...freshItems);
   }
 
   let gotResponse = false;
