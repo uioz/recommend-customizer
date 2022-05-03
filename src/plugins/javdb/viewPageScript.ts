@@ -69,22 +69,13 @@ export function script() {
       }
     }
 
-    const magnetButtons = document.querySelectorAll<HTMLButtonElement>(
-      ".magnet-links [data-clipboard-text]"
-    );
-
-    for (const button of Array.from(magnetButtons)) {
-      button.addEventListener(
-        "click",
-        () => {
-          // TODO: 对于同一个影片禁止发送两次, 可以基于 code 过滤
+    document
+      .getElementById("modal-save-list")
+      ?.addEventListener("change", ({ target }) => {
+        if (target instanceof HTMLInputElement && target.checked) {
           sendToBackground();
-        },
-        {
-          passive: true,
         }
-      );
-    }
+      });
   } else {
     // TODO: maybe warning on popup page
     console.warn("NOT MATCH!");
