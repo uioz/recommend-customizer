@@ -40,7 +40,15 @@ export function init() {
 const normalWordMap = new Map<string, Set<string>>([
   [
     "名詞",
-    new Set(["一般", "形容動詞語幹", "サ変接続", "形容動詞語幹", "固有名詞"]),
+    new Set([
+      "一般",
+      "形容動詞語幹",
+      "サ変接続",
+      "形容動詞語幹",
+      "固有名詞",
+      "非自立",
+      "接尾",
+    ]),
   ],
   ["動詞", new Set(["自立"])],
 ]);
