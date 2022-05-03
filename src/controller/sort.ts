@@ -30,33 +30,56 @@ interface Item {
 async function analyse(data: Array<CodeRequest>) {
   const results: Array<Item> = [];
 
+  let i = 0,
+    len = data.length;
+
+  const indexList = []; // capacity equal to data
+  const codeList = []; // contain validated code only
+
+  while (i < len) {
+    results.push({
+      key: data[i].key,
+      rank: data[i].rank,
+      codeWeight: 0,
+      tokenWeight: 0,
+      actressWeight: 0,
+    });
+
+    const code = getCodePrefix(data[i].code);
+
+    indexList[i] = code;
+
+    if (code) {
+      codeList.push(code);
+    } else {
+      log("warn", LOG_TARGET, {
+        message: "code prefix missing",
+        code: data[i].code,
+        title: data[i].title,
+      });
+    }
+
+    i++;
+  }
+
+  const queryResults = await Code.query(DB, codeList);
+
+  i = 0;
+
+  while (i < len) {
+    if (indexList[i] !== null) {
+      results[i].codeWeight = queryResults.shift() as number;
+    }
+    i++;
+  }
+
   // TODO: batch operation, improvement later
   await Promise.all(
-    data.map(async ({ code: fullCode, title, key, rank }) => {
-      const item: Item = {
-        key,
-        rank,
-        codeWeight: 0,
-        tokenWeight: 0,
-        actressWeight: 0,
-      };
-
-      const code = getCodePrefix(fullCode);
-
-      if (code) {
-        item.codeWeight = await Code.singleQuery(DB, code);
-      } else {
-        log("warn", LOG_TARGET, {
-          message: "code prefix missing",
-          code: fullCode,
-          title,
-        });
-      }
-
+    data.map(async ({ code: fullCode, title }, index) => {
       const tokens = await tokenilize(title);
 
       if (tokens.length) {
-        item.tokenWeight = await Sentiment.totalWeight(
+        results[index].tokenWeight = await Sentiment.totalWeight(
           DB,
           Array.from(new Set(tokens))
         );
@@ -68,10 +91,10 @@ async function analyse(data: Array<CodeRequest>) {
         });
       }
 
-      const actress = await findActors(title);
+      const actress = findActors(title);
 
       if (actress.length) {
-        item.actressWeight = await Actress.totalWeight(DB, actress);
+        results[index].actressWeight = await Actress.totalWeight(DB, actress);
       } /* else {
         log("info", LOG_TARGET, {
           message: "actress match missing",
@@ -79,8 +102,6 @@ async function analyse(data: Array<CodeRequest>) {
           title,
         });
       } */
-
-      results.push(item);
     })
   );
 

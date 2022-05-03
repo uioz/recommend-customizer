@@ -7,16 +7,13 @@ export interface CodeTable {
 
 export const indexes = "code,weight";
 
-export async function singleQuery(db: MainDb, code: string): Promise<number> {
-  const data = await db.code.get({
-    code,
-  });
+export async function query(
+  db: MainDb,
+  codes: Array<string>
+): Promise<Array<number>> {
+  const data = await db.code.bulkGet(codes);
 
-  if (data) {
-    return data.weight;
-  }
-
-  return 0;
+  return data.map((item) => item?.weight ?? 0);
 }
 
 export function update(db: MainDb, codes: Array<string>) {

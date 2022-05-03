@@ -19,7 +19,7 @@ export async function init() {
   console.log(`${LOG_TARGET} success`);
 }
 
-export async function findActors(str: string) {
+export function findActors(str: string) {
   const machedNames = [];
 
   let offset = 0,
