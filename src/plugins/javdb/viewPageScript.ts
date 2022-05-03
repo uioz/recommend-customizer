@@ -88,25 +88,6 @@ export function script() {
   document.body.appendChild(node);
 
   if (code && isJav(title)) {
-    const reviewButtons = document
-      .querySelector(".review-buttons.buttons")
-      ?.querySelectorAll<HTMLButtonElement>("button");
-
-    if (reviewButtons) {
-      for (const reviewButton of Array.from(reviewButtons)) {
-        reviewButton.addEventListener(
-          "click",
-          () => {
-            // TODO: 对于同一个影片禁止发送两次, 可以基于 code 过滤
-            sendToBackground();
-          },
-          {
-            passive: true,
-          }
-        );
-      }
-    }
-
     document
       .getElementById("modal-save-list")
       ?.addEventListener("change", ({ target }) => {
@@ -114,6 +95,23 @@ export function script() {
           sendToBackground();
         }
       });
+
+    const magnetButtons = document.querySelectorAll<HTMLButtonElement>(
+      ".magnet-links [data-clipboard-text]"
+    );
+
+    for (const button of Array.from(magnetButtons)) {
+      button.addEventListener(
+        "click",
+        () => {
+          // TODO: 对于同一个影片禁止发送两次, 可以基于 code 过滤
+          sendToBackground();
+        },
+        {
+          passive: true,
+        }
+      );
+    }
   } else {
     // TODO: maybe warning on popup page
     console.warn("NOT MATCH!");
