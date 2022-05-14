@@ -20,7 +20,7 @@ export async function init() {
 }
 
 export function findActors(str: string) {
-  const machedNames = [];
+  const machedNames = new Set<string>();
 
   let offset = 0,
     len = str.length;
@@ -28,7 +28,7 @@ export function findActors(str: string) {
   while (offset < len) {
     for (const result of searchEngine.find(str[offset]).reverse()) {
       if (result === str.slice(offset, offset + result.length)) {
-        machedNames.push(result);
+        machedNames.add(result);
         break;
       }
     }
@@ -36,5 +36,6 @@ export function findActors(str: string) {
     offset++;
   }
 
-  return machedNames;
+
+  return Array.from(machedNames);
 }
